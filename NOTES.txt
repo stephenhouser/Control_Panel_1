@@ -1,0 +1,16 @@
+
+Getting Started in KiCad
+https://docs.kicad.org/6.0/en/getting_started_in_kicad/getting_started_in_kicad.html#tutorial_part_3_circuit_board
+
+in ~/Documents/KiCad
+	https://forum.digikey.com/t/importing-the-digi-key-kicad-library-into-kicad-5-0-0/4075
+```	
+git clone https://github.com/Digi-Key/digikey-kicad-library.git
+git clone https://github.com/jdunmire/kicad-ESP8266
+```
+
+toggle switch: 
+pushbutton: PS1024ALRED, 
+https://www.digikey.com/en/products/base-product/e-switch/141/PS1024/476669
+https://www.digikey.com/en/products/detail/e-switch/PS1024ALRED/81539
+https://media.digikey.com/pdf/Data%20Sheets/E-Switch%20PDFs/PS1024ablk%20Drawing.pdf

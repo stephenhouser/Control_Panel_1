@@ -1,0 +1,5 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "ESP8266")(type "Legacy")(uri "/Users/houser/Documents/KiCad/kicad-ESP8266/ESP8266.lib")(options "")(descr ""))
+  (lib (name "toggle")(type "Legacy")(uri "/Users/houser/Documents/KiCad/100SP1T1B4M2QE/100SP1T1B4M2QE.lib")(options "")(descr ""))
+)
