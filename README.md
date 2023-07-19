@@ -23,9 +23,10 @@ Look in the Box_Panels directory. These are SVG files for a laser cutter
 
 # PCBs for Base and Top panels
 
-Base Panel
+Uses KiCad v7.x for two PCB's; Control Board and Display Board.
+
+Control Board
 ---
-Look in Control Board for the Base PCB. Uses KiCad v7.x.
 
 - Version 1.0 sent to fab on 7/17/2023
 
@@ -40,9 +41,9 @@ Components:
 -  1 x Mini pushbutton switch ([Amazon](https://www.amazon.com/Momentary-Spring-Return-Self-Return-Pushbutton-Switches/dp/B09DJY5Y5L/ref=sr_1_3?keywords=mini+pushbutton+switch&qid=1689705893&sprefix=mini+pushbutton+s%2Caps%2C102&sr=8-3))
 
 
-Top Panel
+Display Board
 ---
-Top Board not yet created.
+Display Board not yet created.
 
 Components:
 
