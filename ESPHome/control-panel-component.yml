@@ -1,0 +1,141 @@
+# control-panel.yaml - ESPHome configuration for the Control Panel v1
+# 
+# 2023/07/24 Stephen Houser
+substitutions:
+  device_name: "control-panel-1"
+  friendly_name: "Control Panel 1"
+  friendly_short: "control_panel_1"
+
+esphome:
+  name: ${device_name}
+  friendly_name: ${friendly_name}
+  # includes:
+  #   - control-panel/control-panel.h
+  # libraries:
+  #   - "FastLED"
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+logger:
+  # Enable logger
+
+wifi:
+  # WiFi settings are mostly secrets
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  # fast_connect helps with connection to hidden SSID
+  fast_connect: true
+  # force the network name to be on hidden network
+  use_address: ${device-name}.playmates
+
+ota:
+  # Enable Over The Air (OTA) updates with password
+  password: !secret ota_password
+
+api:
+  # Enable Encrypted Home Assistant API
+  encryption:
+    key: "G+UNlM3nwQwj87nA+e9PllL1n7BNlsvfkPNOTAX8yG0="
+
+mqtt:
+  # Secret MQTT server parameters
+  broker: !secret mqtt_host
+  username: !secret mqtt_user
+  password: !secret mqtt_password
+
+web_server:
+  # Web interface enabled and has local resources (no Internet)
+  local: true
+  include_internal: true
+
+switch:
+  # Allow remote restart (from web interface also)
+  - platform: restart
+    name: "${friendly_name} Restart"
+
+output:
+  # Configure GPIO21 as an output to pull it low and enable the rotary encoder
+  # Could have just wired this to ground on the PCB, but it's wired to a pin.
+  - platform: gpio
+    pin: GPIO22
+    id: rotarty_encoder_enable
+
+external_components:
+  # use all components from a local folder
+  - source:
+      type: local
+      path: components
+    components: [ matrix_keyboard ]
+
+matrix_keyboard:
+  # The matrix toggle switches on the control panel
+  # name: "Keyboard"
+  id: keyboard
+  rows:
+    - pin: GPIO12
+    - pin: GPIO13
+    - pin: GPIO14
+  columns:
+    - pin: GPIO25
+    - pin: GPIO26
+    - pin: GPIO27
+    - pin: GPIO33
+  leds:
+    pin: 5
+    num_leds: 13
+  # The PCB was laid out to make the wires go, so the rows and columns
+  # are not really lined up. This mapping maps the switches to sane "keys"
+  keymap: "615B234C789A"
+  # There are diodes for n-key rollover
+  has_diodes: true     
+
+binary_sensor:
+  - <<: !include common/status.yaml
+
+  # The red call pushbutton
+  - platform: gpio
+    name: "Call Button"
+    id: call_button
+    pin: 
+      number: GPIO18
+      mode: INPUT_PULLUP
+      inverted: true
+
+  # The rotary encoder has a push button
+  - platform: gpio
+    name: "Rotary Encoder Button"
+    id: rotary_encoder_button
+    pin: 
+      number: GPIO19
+      mode: INPUT_PULLUP
+      inverted: true
+
+  - platform: matrix_keyboard
+    keyboard_id: keyboard
+    name: "Switch 1"
+    id: sw1
+    key: 1
+
+sensor:
+  - <<: !include common/wifi_status.yaml
+
+  - <<: !include common/uptime.yaml
+
+  # The rotary encoder rotation
+  - platform: rotary_encoder
+    name: "Rotary Encoder"
+    id: panel_encoder
+    publish_initial_value: True
+    pin_a: 
+      number: GPIO21
+      mode: INPUT_PULLUP
+    pin_b: 
+      number: GPIO23
+      mode: INPUT_PULLUP
+    # on_clockwise:
+    #   then:
+    # on_anticlockwise:
+    #   then:
