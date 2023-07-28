@@ -2,15 +2,15 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import binary_sensor
 from esphome.const import CONF_ID, CONF_KEY
-from .. import MatrixKeyboard, matrix_keyboard_ns, CONF_KEYBOARD_ID
+from .. import LEDMatrixKeyboard, led_matrix_keyboard_ns, CONF_KEYBOARD_ID
 
 CONF_ROW = "row"
 CONF_COL = "col"
 
-DEPENDENCIES = ["matrix_keyboard"]
+DEPENDENCIES = ["led_matrix_keyboard"]
 
-MatrixKeyboardBinarySensor = matrix_keyboard_ns.class_(
-    "MatrixKeyboardBinarySensor", binary_sensor.BinarySensor
+LEDMatrixKeyboardBinarySensor = led_matrix_keyboard_ns.class_(
+    "LEDMatrixKeyboardBinarySensor", binary_sensor.BinarySensor
 )
 
 
@@ -30,9 +30,9 @@ def check_button(obj):
 
 
 CONFIG_SCHEMA = cv.All(
-    binary_sensor.binary_sensor_schema(MatrixKeyboardBinarySensor).extend(
+    binary_sensor.binary_sensor_schema(LEDMatrixKeyboardBinarySensor).extend(
         {
-            cv.GenerateID(CONF_KEYBOARD_ID): cv.use_id(MatrixKeyboard),
+            cv.GenerateID(CONF_KEYBOARD_ID): cv.use_id(LEDMatrixKeyboard),
             cv.Optional(CONF_ROW): cv.int_,
             cv.Optional(CONF_COL): cv.int_,
             cv.Optional(CONF_KEY): cv.string,
@@ -48,5 +48,5 @@ async def to_code(config):
     else:
         var = cg.new_Pvariable(config[CONF_ID], config[CONF_ROW], config[CONF_COL])
     await binary_sensor.register_binary_sensor(var, config)
-    matrix_keyboard = await cg.get_variable(config[CONF_KEYBOARD_ID])
-    cg.add(matrix_keyboard.register_listener(var))
+    led_matrix_keyboard = await cg.get_variable(config[CONF_KEYBOARD_ID])
+    cg.add(led_matrix_keyboard.register_listener(var))

@@ -1,16 +1,16 @@
 #pragma once
 
-#include "esphome/components/matrix_keyboard/matrix_keyboard.h"
+#include "esphome/components/led_matrix_keyboard/led_matrix_keyboard.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
 
 namespace esphome {
-namespace matrix_keyboard {
+namespace led_matrix_keyboard {
 
-class MatrixKeyboardBinarySensor : public MatrixKeyboardListener, public binary_sensor::BinarySensor {
+class LEDMatrixKeyboardBinarySensor : public LEDMatrixKeyboardListener, public binary_sensor::BinarySensor {
  public:
-  MatrixKeyboardBinarySensor(uint8_t key) : has_key_(true), key_(key){};
-  MatrixKeyboardBinarySensor(const char *key) : has_key_(true), key_((uint8_t) key[0]){};
-  MatrixKeyboardBinarySensor(int col, int row) : has_key_(false), row_(row), col_(col){};
+  LEDMatrixKeyboardBinarySensor(uint8_t key) : has_key_(true), key_(key){};
+  LEDMatrixKeyboardBinarySensor(const char *key) : has_key_(true), key_((uint8_t) key[0]){};
+  LEDMatrixKeyboardBinarySensor(int col, int row) : has_key_(false), row_(row), col_(col){};
 
   void key_pressed(uint8_t key) override {
     if (!this->has_key_)
@@ -47,5 +47,5 @@ class MatrixKeyboardBinarySensor : public MatrixKeyboardListener, public binary_
   int col_;
 };
 
-}  // namespace matrix_keyboard
+}  // namespace led_matrix_keyboard
 }  // namespace esphome
