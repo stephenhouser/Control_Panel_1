@@ -75,7 +75,10 @@ void LEDMatrixKeyboard::loop() {
           ESP_LOGD(TAG,"button_pressed(%d, %d)", col, row);
 
           if (this->light_) {
-            int led = led_for_key(k);
+            int led = k;
+            if (!this->light_map_.empty()) {
+              led = this->light_map_[k % this->light_map_.size()];
+            }
             light::ESPColorView pixel = (*this->light_)[led];
             pixel.set_rgbw(128, 0, 0, 0);
             this->light_->schedule_show();
@@ -104,7 +107,10 @@ void LEDMatrixKeyboard::loop() {
           }
 
           if (this->light_) {
-            int led = led_for_key(k);
+            int led = k;
+            if (!this->light_map_.empty()) {
+              led = this->light_map_[k % this->light_map_.size()];
+            }
             light::ESPColorView pixel = (*this->light_)[led];
             pixel.set_rgbw(0, 0, 0, 0);
             this->light_->schedule_show();

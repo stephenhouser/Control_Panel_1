@@ -2,6 +2,8 @@
 
 The old-school hard-switch control panel for Home Automation.
 
+![Breadboard Prototype](images/prototype-1-complete.jpg)
+
 This project has a few parts, each documented in their own section below.
 
 - Project Box from Amazon; link and description
@@ -16,6 +18,8 @@ https://www.amazon.com/gp/product/B005T98PQS/ref=ppx_yo_dt_b_search_asin_title?i
 Another option, without the top display is the [BUD Industries PC-11493 Plastic Style F Box 9" L x 8.5" W x 1.98" H, Natural](https://www.amazon.com/gp/product/B005T592P0/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1) for ~$30 USD. The [Dimensions](https://www.budind.com/wp-content/uploads/2019/01/hb11493.pdf) are available from BUD Industries (thank you!)
 
 You can find details on these boxes in general from [BUD Industries](https://www.budind.com/series/general-use-boxes/plasticase-style-f-plastic-cases-2/#group=series-products&external_dimensions_group=0&internal_dimensions=0)
+
+![Breadboard Prototype](images/prototype-1-breadboard.jpg)
 
 # Base and Top Panels
 
@@ -39,6 +43,10 @@ Components:
 - 10 x 1N4148 Diodes
 -  1 x Rotary Encoder + Knob ([Amazon](https://www.amazon.com/gp/product/B07DM2YMT4/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1))
 -  1 x Mini pushbutton switch ([Amazon](https://www.amazon.com/Momentary-Spring-Return-Self-Return-Pushbutton-Switches/dp/B09DJY5Y5L/ref=sr_1_3?keywords=mini+pushbutton+switch&qid=1689705893&sprefix=mini+pushbutton+s%2Caps%2C102&sr=8-3))
+
+![Control Board PCB Front](images/control-board-pcb-front-v1.0.jpg))
+![Control Board PCB Back](images/control-board-pcb-back-v1.0.jpg))
+
 
 
 Display Board

@@ -4,3 +4,6 @@
 *-cache*
 _autosave*
 \#auto_saved_files\#
+__pycache__/
+.esphome/
+secrets.yaml

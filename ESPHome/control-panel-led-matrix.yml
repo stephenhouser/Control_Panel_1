@@ -74,6 +74,12 @@ external_components:
       path: components
     components: [ led_matrix_keyboard ]
 
+globals:
+  - id: led_bright
+    type: int
+    restore_value: yes
+    initial_value: '50'
+
 light:
   # The Addressable RGB lights on the control panel. All in one "strip"
   - platform: esp32_rmt_led_strip
@@ -101,14 +107,16 @@ led_matrix_keyboard:
     - pin: GPIO33
   # The PCB was laid out to make the wires go, so the rows and columns
   # are not really lined up. This mapping maps the switches to sane "keys"
-  key_map: "615B234C789A"
+  # so the switch at row0, col0 is at index 0 in this string
+  key_map: "504A123B6789"
   # There are diodes for n-key rollover
-  has_diodes: true     
-  # leds:
-  #   pin: 5
-  #   num_leds: 13
+  has_diodes: true
+  # will toggle these LEDs     
   light_id: panel_leds
-  light_map: "615B234C789A"
+  # The addresses of the LEDs might not match keys, so this map translates
+  # the 0-th entry will turn on when the key at row0,col0 is toggled
+  light_map: [7, 8, 12, 0, 9, 10, 11, 0, 6, 5, 4, 3]
+  # light_map: "78C09AB06543"
 
 binary_sensor:
   - <<: !include common/status.yaml
@@ -121,6 +129,26 @@ binary_sensor:
       number: GPIO18
       mode: INPUT_PULLUP
       inverted: true
+    on_press:
+      then:
+        - light.addressable_set:
+            id: panel_leds
+            range_from: 1
+            range_to: 1
+            red: 50%
+            green: 0%
+            blue: 0%
+            white: 0%
+    on_release:
+      then:
+        - light.addressable_set:
+            id: panel_leds
+            range_from: 1
+            range_to: 1
+            blue: 0%
+            red: 0%
+            green: 0%
+            white: 0%
 
   # The rotary encoder has a push button
   - platform: gpio
@@ -130,6 +158,26 @@ binary_sensor:
       number: GPIO19
       mode: INPUT_PULLUP
       inverted: true
+    on_press:
+      then:
+        - light.addressable_set:
+            id: panel_leds
+            range_from: 2
+            range_to: 2
+            red: 50%
+            green: 0%
+            blue: 0%
+            white: 0%
+    on_release:
+      then:
+        - light.addressable_set:
+            id: panel_leds
+            range_from: 2
+            range_to: 2
+            blue: 0%
+            red: 0%
+            green: 0%
+            white: 0%
 
   - platform: led_matrix_keyboard
     keyboard_id: keyboard
@@ -153,7 +201,20 @@ sensor:
     pin_b: 
       number: GPIO23
       mode: INPUT_PULLUP
-    # on_clockwise:
-    #   then:
-    # on_anticlockwise:
-    #   then:
+    on_clockwise:
+      then:
+        - lambda: !lambda |-
+            int bright = id(led_bright) < 100 ? id(led_bright) + 1 : 100;
+            id(led_bright) = bright;
+            auto call = id(panel_leds);
+            call.set_brightness(bright/100);
+            call.perform();
+
+    on_anticlockwise:
+      then:
+        - lambda: !lambda |-
+            int bright = id(led_bright) > 0 ? id(led_bright) - 1 : 0;
+            id(led_bright) = bright;
+            auto call = id(panel_leds);
+            call->set_brightness(bright/100);
+            call->perform();

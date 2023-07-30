@@ -36,7 +36,7 @@ class LEDMatrixKeyboard : public key_provider::KeyProvider, public Component {
     light_state_ = light_state; 
     light_ = static_cast<light::AddressableLight *>(light_state->get_output());
     }
-  void set_light_map(std::string light_map) { light_map_ = std::move(light_map); }
+  void set_light_map(std::vector<int> light_map) { light_map_ = std::move(light_map); }
 
   void register_listener(LEDMatrixKeyboardListener *listener);
 
@@ -51,7 +51,7 @@ class LEDMatrixKeyboard : public key_provider::KeyProvider, public Component {
   light::LightState *light_state_;
   light::AddressableLight *light_;
 
-  std::string light_map_;
+  std::vector<int> light_map_;
 
   std::vector<LEDMatrixKeyboardListener *> listeners_{};
 };

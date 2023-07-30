@@ -57,7 +57,10 @@ CONFIG_SCHEMA = cv.All(
             cv.Optional(CONF_HAS_DIODES): cv.boolean,
 
             cv.Optional(CONF_LIGHT_ID): cv.use_id(light.AddressableLightState),
-            cv.Optional(CONF_LIGHT_MAP): cv.string,
+            # cv.Optional(CONF_LIGHT_MAP): cv.string,
+            cv.Optional(CONF_LIGHT_MAP): cv.All(
+                cv.Length(min=1),
+            ),
         }
     ),
     check_keymap,
@@ -91,4 +94,7 @@ async def to_code(config):
     if CONF_LIGHT_ID in config:        
         cg.add(var.set_light(await cg.get_variable(config[CONF_LIGHT_ID])))
         if CONF_LIGHT_MAP in config:
-            cg.add(var.set_light_map(config[CONF_LIGHT_MAP]))
+            light_map = []
+            for conf in config[CONF_LIGHT_MAP]:
+                light_map.append(conf)
+            cg.add(var.set_light_map(light_map))
