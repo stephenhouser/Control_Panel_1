@@ -54,6 +54,12 @@ external_components:
       path: components
     components: [ matrix_keyboard ]
 
+globals:
+  - id: led_bright
+    type: int
+    restore_value: yes
+    initial_value: '50'
+
 switch:
   # Allow remote restart (from web interface also)
   - platform: restart
@@ -77,6 +83,123 @@ light:
     rmt_channel: 0
     chipset: ws2812
     name: "Panel LEDs"
+
+  - platform: partition
+    name: "Light 0"
+    id: light0
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 8
+        to: 8
+  - platform: partition
+    name: "Light 1"
+    id: light1
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 9
+        to: 9
+  - platform: partition
+    name: "Light 2"
+    id: light2
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 10
+        to: 10
+  - platform: partition
+    name: "Light 3"
+    id: light3
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 11
+        to: 11
+  - platform: partition
+    name: "Light 4"
+    id: light4
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 12
+        to: 12
+
+  - platform: partition
+    name: "Light 5"
+    id: light5
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 7
+        to: 7
+  - platform: partition
+    name: "Light 6"
+    id: light6
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 6
+        to: 6
+  - platform: partition
+    name: "Light 7"
+    id: light7
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 5
+        to: 5
+  - platform: partition
+    name: "Light 8"
+    id: light8
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 4
+        to: 4
+  - platform: partition
+    name: "Light 9"
+    id: light9
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 3
+        to: 3
+
+  - platform: partition
+    name: "Light Encoder"
+    id: light_encoder
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 2
+        to: 2
+
+  - platform: partition
+    name: "Light Call"
+    id: light_call
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 1
+        to: 1
+
+  - platform: partition
+    name: "Light A"
+    id: light_a
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 0
+        to: 0
+  - platform: partition
+    name: "Light B"
+    id: light_b
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 0
+        to: 0
 
 matrix_keyboard:
   # The matrix toggle switches on the control panel
@@ -110,18 +233,17 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 1
-            range_to: 1
-            blue: 50%
+        - light.turn_on:
+            id: light_call
+            brightness: !lambda |-
+              return id(led_bright) / 100.0;
+            red: 1
+            green: 0
+            blue: 0
+            white: 0
     on_release:
       then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 1
-            range_to: 1
-            blue: 0%
+        - light.turn_off: light_call
 
   # The rotary encoder has a push button
   - platform: gpio
@@ -133,266 +255,84 @@ binary_sensor:
       inverted: true
     on_press:
       then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 2
-            range_to: 2
-            red: 50%
-            blue: 50%
+        - light.turn_on:
+            id: light_encoder
+            brightness: !lambda |-
+              return id(led_bright) / 100.0;
+            red: 1
+            green: 0
+            blue: 0
+            white: 0
     on_release:
       then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 2
-            range_to: 2
-            red: 0%
-            blue: 0%
+        - light.turn_off: light_encoder
 
+  - platform: matrix_keyboard
+    keyboard_id: keyboard
+    name: "Switch 0"
+    id: sw0
+    key: 0
   - platform: matrix_keyboard
     keyboard_id: keyboard
     name: "Switch 1"
     id: sw1
-    key: 0
-    on_press:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 8
-            range_to: 8
-            red: 50%
-    on_release:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 8
-            range_to: 8
-            red: 0%
-
+    key: 1
   - platform: matrix_keyboard
     keyboard_id: keyboard
     name: "Switch 2"
     id: sw2
-    key: 1
-    on_press:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 9
-            range_to: 9
-            red: 50%
-    on_release:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 9
-            range_to: 9
-            red: 0%
-
+    key: 2
   - platform: matrix_keyboard
     keyboard_id: keyboard
     name: "Switch 3"
     id: sw3
-    key: 2
-    on_press:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 10
-            range_to: 10
-            red: 50%
-    on_release:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 10
-            range_to: 10
-            red: 0%
-
+    key: 3
   - platform: matrix_keyboard
     keyboard_id: keyboard
     name: "Switch 4"
     id: sw4
-    key: 3
-    on_press:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 11
-            range_to: 11
-            red: 50%
-    on_release:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 11
-            range_to: 11
-            red: 0%
+    key: 4
 
   - platform: matrix_keyboard
     keyboard_id: keyboard
     name: "Switch 5"
     id: sw5
-    key: 4
-    on_press:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 12
-            range_to: 12
-            red: 50%
-    on_release:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 12
-            range_to: 12
-            red: 0%
-
+    key: 5
   - platform: matrix_keyboard
     keyboard_id: keyboard
     name: "Switch 6"
     id: sw6
-    key: 5
-    on_press:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 7
-            range_to: 7
-            red: 50%
-    on_release:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 7
-            range_to: 7
-            red: 0%
-
+    key: 6
   - platform: matrix_keyboard
     keyboard_id: keyboard
     name: "Switch 7"
     id: sw7
-    key: 6
-    on_press:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 6
-            range_to: 6
-            red: 50%
-    on_release:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 6
-            range_to: 6
-            red: 0%
-
+    key: 7
   - platform: matrix_keyboard
     keyboard_id: keyboard
     name: "Switch 8"
     id: sw8
-    key: 7
-    on_press:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 5
-            range_to: 5
-            red: 50%
-    on_release:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 5
-            range_to: 5
-            red: 0%
-
+    key: 8
   - platform: matrix_keyboard
     keyboard_id: keyboard
     name: "Switch 9"
     id: sw9
-    key: 8
-    on_press:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 4
-            range_to: 4
-            red: 50%
-    on_release:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 4
-            range_to: 4
-            red: 0%
-
-  - platform: matrix_keyboard
-    keyboard_id: keyboard
-    name: "Switch 10"
-    id: sw10
     key: 9
-    on_press:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 3
-            range_to: 3
-            red: 50%
-    on_release:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 3
-            range_to: 3
-            red: 0%
 
   - platform: matrix_keyboard
     keyboard_id: keyboard
     name: "Switch A"
     id: swA
     key: A
-    on_press:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 0
-            range_to: 0
-            red: 50%
-    on_release:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 0
-            range_to: 0
-            red: 0%
-
   - platform: matrix_keyboard
     keyboard_id: keyboard
     name: "Switch B"
     id: swB
     key: B
-    on_press:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 0
-            range_to: 0
-            green: 50%
-    on_release:
-      then:
-        - light.addressable_set:
-            id: panel_leds
-            range_from: 0
-            range_to: 0
-            green: 0%
 
 sensor:
   - <<: !include common/wifi_status.yaml
-
   - <<: !include common/uptime.yaml
-
   # The rotary encoder rotation
   - platform: rotary_encoder
     name: "Rotary Encoder"
@@ -406,11 +346,11 @@ sensor:
       mode: INPUT_PULLUP
     on_clockwise:
       then:
-        light.dim_relative:
-          id: panel_leds
-          relative_brightness: 10%
+        - lambda: !lambda |-
+            int bright = id(led_bright) < 100 ? id(led_bright) + 1 : 100;
+            id(led_bright) = bright;
     on_anticlockwise:
       then:
-        light.dim_relative:
-          id: panel_leds
-          relative_brightness: -10%
+        - lambda: !lambda |-
+            int bright = id(led_bright) > 0 ? id(led_bright) - 1 : 0;
+            id(led_bright) = bright;

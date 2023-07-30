@@ -31,13 +31,6 @@ void LEDMatrixKeyboard::setup() {
   this->keys_.assign(total_keys, 0);
 }
 
-// returns led next to toggle switch
-int led_for_key(int key) {
-  //  key_map: "615B234C789A"
-  int key_led_map[] = { 7, 8, 12, 0, 9, 10, 11, 0, 6, 5, 4, 3, 0, 0 };
-  return key_led_map[key % 13];
-}
-
 void LEDMatrixKeyboard::loop() {
   uint32_t now = millis();
 

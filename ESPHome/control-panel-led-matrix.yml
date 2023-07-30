@@ -9,10 +9,6 @@ substitutions:
 esphome:
   name: ${device_name}
   friendly_name: ${friendly_name}
-  # includes:
-  #   - control-panel/control-panel.h
-  # libraries:
-  #   - "FastLED"
 
 esp32:
   board: esp32dev
@@ -91,6 +87,119 @@ light:
     rmt_channel: 0
     chipset: ws2812
     name: "Panel LEDs"
+  - platform: partition
+    name: "Light 0"
+    id: light0
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 8
+        to: 8
+  - platform: partition
+    name: "Light 1"
+    id: light1
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 9
+        to: 9
+  - platform: partition
+    name: "Light 2"
+    id: light2
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 10
+        to: 10
+  - platform: partition
+    name: "Light 3"
+    id: light3
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 11
+        to: 11
+  - platform: partition
+    name: "Light 4"
+    id: light4
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 12
+        to: 12
+
+  - platform: partition
+    name: "Light 5"
+    id: light5
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 7
+        to: 7
+  - platform: partition
+    name: "Light 6"
+    id: light6
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 6
+        to: 6
+  - platform: partition
+    name: "Light 7"
+    id: light7
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 5
+        to: 5
+  - platform: partition
+    name: "Light 8"
+    id: light8
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 4
+        to: 4
+  - platform: partition
+    name: "Light 9"
+    id: light9
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 3
+        to: 3
+  - platform: partition
+    name: "Light Encoder"
+    id: light_encoder
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 2
+        to: 2
+  - platform: partition
+    name: "Light Call"
+    id: light_call
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 1
+        to: 1
+  - platform: partition
+    name: "Light B"
+    id: light_b
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 0
+        to: 0
+  - platform: partition
+    name: "Light A"
+    id: light_a
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 0
+        to: 0
 
 led_matrix_keyboard:
   # The matrix toggle switches on the control panel
@@ -135,20 +244,21 @@ binary_sensor:
             id: panel_leds
             range_from: 1
             range_to: 1
-            red: 50%
-            green: 0%
-            blue: 0%
-            white: 0%
+            red: !lambda |-
+              return id(led_bright) / 100.0;
+            green: 0
+            blue: 0
+            white: 0
     on_release:
       then:
         - light.addressable_set:
             id: panel_leds
             range_from: 1
             range_to: 1
-            blue: 0%
-            red: 0%
-            green: 0%
-            white: 0%
+            blue: 0
+            red: 0
+            green: 0
+            white: 0
 
   # The rotary encoder has a push button
   - platform: gpio
@@ -164,26 +274,82 @@ binary_sensor:
             id: panel_leds
             range_from: 2
             range_to: 2
-            red: 50%
-            green: 0%
-            blue: 0%
-            white: 0%
+            red: !lambda |-
+              return id(led_bright) / 100.0;
+            green: 0
+            blue: 0
+            white: 0
     on_release:
       then:
         - light.addressable_set:
             id: panel_leds
             range_from: 2
             range_to: 2
-            blue: 0%
-            red: 0%
-            green: 0%
-            white: 0%
+            blue: 0
+            red: 0
+            green: 0
+            white: 0
 
+  - platform: led_matrix_keyboard
+    keyboard_id: keyboard
+    name: "Switch 0"
+    id: sw0
+    key: 0
   - platform: led_matrix_keyboard
     keyboard_id: keyboard
     name: "Switch 1"
     id: sw1
     key: 1
+  - platform: led_matrix_keyboard
+    keyboard_id: keyboard
+    name: "Switch 2"
+    id: sw2
+    key: 2
+  - platform: led_matrix_keyboard
+    keyboard_id: keyboard
+    name: "Switch 3"
+    id: sw3
+    key: 3
+  - platform: led_matrix_keyboard
+    keyboard_id: keyboard
+    name: "Switch 4"
+    id: sw4
+    key: 4
+  - platform: led_matrix_keyboard
+    keyboard_id: keyboard
+    name: "Switch 5"
+    id: sw5
+    key: 5
+  - platform: led_matrix_keyboard
+    keyboard_id: keyboard
+    name: "Switch 6"
+    id: sw6
+    key: 6
+  - platform: led_matrix_keyboard
+    keyboard_id: keyboard
+    name: "Switch 7"
+    id: sw7
+    key: 7
+  - platform: led_matrix_keyboard
+    keyboard_id: keyboard
+    name: "Switch 8"
+    id: sw8
+    key: 8
+  - platform: led_matrix_keyboard
+    keyboard_id: keyboard
+    name: "Switch 9"
+    id: sw9
+    key: 9
+  - platform: led_matrix_keyboard
+    keyboard_id: keyboard
+    name: "Switch A"
+    id: swA
+    key: A
+  - platform: led_matrix_keyboard
+    keyboard_id: keyboard
+    name: "Switch B"
+    id: swB
+    key: B
 
 sensor:
   - <<: !include common/wifi_status.yaml
@@ -206,15 +372,9 @@ sensor:
         - lambda: !lambda |-
             int bright = id(led_bright) < 100 ? id(led_bright) + 1 : 100;
             id(led_bright) = bright;
-            auto call = id(panel_leds);
-            call.set_brightness(bright/100);
-            call.perform();
 
     on_anticlockwise:
       then:
         - lambda: !lambda |-
             int bright = id(led_bright) > 0 ? id(led_bright) - 1 : 0;
             id(led_bright) = bright;
-            auto call = id(panel_leds);
-            call->set_brightness(bright/100);
-            call->perform();

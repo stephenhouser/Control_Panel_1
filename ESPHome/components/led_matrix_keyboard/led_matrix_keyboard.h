@@ -7,7 +7,6 @@
 #include "esphome/core/helpers.h"
 #include <cstdlib>
 #include <utility>
-#include "FastLED.h"
 
 namespace esphome {
 namespace led_matrix_keyboard {
