@@ -1,6 +1,0 @@
-#!/bin/bash
-docker run --rm \
-	-v "${PWD}":/config \
-	-it ghcr.io/esphome/esphome \
-	$* 
-#	--device=/dev/cu.usbserial-0001 \
