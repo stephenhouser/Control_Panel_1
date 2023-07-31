@@ -1,0 +1,40 @@
+blueprint:
+  name: Control Panel SW
+  description: Turn devices on and off with Control Panel switches
+  domain: automation
+  input:
+    panel_switch:
+      name: Panel Switch
+      description: The switch to control the device
+      selector:
+        entity:
+          filter:
+            domain: [switch, binary_sensor]
+    target_device:
+      name: Target Device
+      description: The device to be controlled
+      selector:
+        target:
+          entity:
+            domain: [light, switch]
+
+trigger:
+  - platform: state
+    entity_id: !input panel_switch
+
+action:
+  - choose:
+      - conditions:
+          - condition: state
+            entity_id: !input panel_switch
+            state: "off"
+        sequence:
+          - service: homeassistant.turn_off
+            target: !input target_device
+      - conditions:
+          - condition: state
+            entity_id: !input panel_switch
+            state: "on"
+        sequence:
+          - service: homeassistant.turn_on
+            target: !input target_device

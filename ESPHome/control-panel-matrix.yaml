@@ -9,6 +9,20 @@ substitutions:
 esphome:
   name: ${device_name}
   friendly_name: ${friendly_name}
+  on_boot:
+    if:
+      condition:
+        api.connected:
+      then:
+        - logger.log: API is connected! Now we can trigger what we want!
+        - light.turn_on: 
+            id: panel_leds
+            red: 0
+            green: 1
+            blue: 0
+        - delay: 1s
+        - logger.log: Time for deep sleep! zzZ
+        - light.turn_off: panel_leds
 
 esp32:
   board: esp32dev
@@ -25,7 +39,7 @@ wifi:
   # fast_connect helps with connection to hidden SSID
   fast_connect: true
   # force the network name to be on hidden network
-  use_address: ${device-name}.playmates
+  use_address: ${device_name}.playmates
 
 ota:
   # Enable Over The Air (OTA) updates with password
@@ -36,11 +50,11 @@ api:
   encryption:
     key: "G+UNlM3nwQwj87nA+e9PllL1n7BNlsvfkPNOTAX8yG0="
 
-mqtt:
-  # Secret MQTT server parameters
-  broker: !secret mqtt_host
-  username: !secret mqtt_user
-  password: !secret mqtt_password
+# mqtt:
+#   # Secret MQTT server parameters
+#   broker: !secret mqtt_host
+#   username: !secret mqtt_user
+#   password: !secret mqtt_password
 
 web_server:
   # Web interface enabled and has local resources (no Internet)
@@ -58,7 +72,7 @@ globals:
   - id: led_bright
     type: int
     restore_value: yes
-    initial_value: '50'
+    initial_value: '15'
 
 switch:
   # Allow remote restart (from web interface also)
@@ -85,40 +99,40 @@ light:
     name: "Panel LEDs"
 
   - platform: partition
-    name: "Light 0"
-    id: light0
+    name: "Light SW0"
+    id: light_sw0
     default_transition_length: 0s
     segments:
       - id: panel_leds
         from: 8
         to: 8
   - platform: partition
-    name: "Light 1"
-    id: light1
+    name: "Light SW1"
+    id: light_sw1
     default_transition_length: 0s
     segments:
       - id: panel_leds
         from: 9
         to: 9
   - platform: partition
-    name: "Light 2"
-    id: light2
+    name: "Light SW2"
+    id: light_sw2
     default_transition_length: 0s
     segments:
       - id: panel_leds
         from: 10
         to: 10
   - platform: partition
-    name: "Light 3"
-    id: light3
+    name: "Light SW3"
+    id: light_sw3
     default_transition_length: 0s
     segments:
       - id: panel_leds
         from: 11
         to: 11
   - platform: partition
-    name: "Light 4"
-    id: light4
+    name: "Light SW4"
+    id: light_sw4
     default_transition_length: 0s
     segments:
       - id: panel_leds
@@ -126,40 +140,40 @@ light:
         to: 12
 
   - platform: partition
-    name: "Light 5"
-    id: light5
+    name: "Light SW5"
+    id: light_sw5
     default_transition_length: 0s
     segments:
       - id: panel_leds
         from: 7
         to: 7
   - platform: partition
-    name: "Light 6"
-    id: light6
+    name: "Light SW6"
+    id: light_sw6
     default_transition_length: 0s
     segments:
       - id: panel_leds
         from: 6
         to: 6
   - platform: partition
-    name: "Light 7"
-    id: light7
+    name: "Light SW7"
+    id: light_sw7
     default_transition_length: 0s
     segments:
       - id: panel_leds
         from: 5
         to: 5
   - platform: partition
-    name: "Light 8"
-    id: light8
+    name: "Light SW8"
+    id: light_sw8
     default_transition_length: 0s
     segments:
       - id: panel_leds
         from: 4
         to: 4
   - platform: partition
-    name: "Light 9"
-    id: light9
+    name: "Light SW9"
+    id: light_sw9
     default_transition_length: 0s
     segments:
       - id: panel_leds
@@ -185,16 +199,8 @@ light:
         to: 1
 
   - platform: partition
-    name: "Light A"
-    id: light_a
-    default_transition_length: 0s
-    segments:
-      - id: panel_leds
-        from: 0
-        to: 0
-  - platform: partition
-    name: "Light B"
-    id: light_b
+    name: "Light SWAB"
+    id: light__swab
     default_transition_length: 0s
     segments:
       - id: panel_leds
@@ -231,19 +237,6 @@ binary_sensor:
       number: GPIO18
       mode: INPUT_PULLUP
       inverted: true
-    on_press:
-      then:
-        - light.turn_on:
-            id: light_call
-            brightness: !lambda |-
-              return id(led_bright) / 100.0;
-            red: 1
-            green: 0
-            blue: 0
-            white: 0
-    on_release:
-      then:
-        - light.turn_off: light_call
 
   # The rotary encoder has a push button
   - platform: gpio
@@ -253,86 +246,73 @@ binary_sensor:
       number: GPIO19
       mode: INPUT_PULLUP
       inverted: true
-    on_press:
-      then:
-        - light.turn_on:
-            id: light_encoder
-            brightness: !lambda |-
-              return id(led_bright) / 100.0;
-            red: 1
-            green: 0
-            blue: 0
-            white: 0
-    on_release:
-      then:
-        - light.turn_off: light_encoder
 
   - platform: matrix_keyboard
     keyboard_id: keyboard
-    name: "Switch 0"
+    name: "Switch SW0"
     id: sw0
     key: 0
   - platform: matrix_keyboard
     keyboard_id: keyboard
-    name: "Switch 1"
+    name: "Switch SW1"
     id: sw1
     key: 1
   - platform: matrix_keyboard
     keyboard_id: keyboard
-    name: "Switch 2"
+    name: "Switch SW2"
     id: sw2
     key: 2
   - platform: matrix_keyboard
     keyboard_id: keyboard
-    name: "Switch 3"
+    name: "Switch SW3"
     id: sw3
     key: 3
   - platform: matrix_keyboard
     keyboard_id: keyboard
-    name: "Switch 4"
+    name: "Switch SW4"
     id: sw4
     key: 4
-
   - platform: matrix_keyboard
     keyboard_id: keyboard
-    name: "Switch 5"
+    name: "Switch SW5"
     id: sw5
     key: 5
   - platform: matrix_keyboard
     keyboard_id: keyboard
-    name: "Switch 6"
+    name: "Switch SW6"
     id: sw6
     key: 6
   - platform: matrix_keyboard
     keyboard_id: keyboard
-    name: "Switch 7"
+    name: "Switch SW7"
     id: sw7
     key: 7
   - platform: matrix_keyboard
     keyboard_id: keyboard
-    name: "Switch 8"
+    name: "Switch SW8"
     id: sw8
     key: 8
   - platform: matrix_keyboard
     keyboard_id: keyboard
-    name: "Switch 9"
+    name: "Switch SW9"
     id: sw9
     key: 9
 
   - platform: matrix_keyboard
     keyboard_id: keyboard
-    name: "Switch A"
+    name: "Switch SWA"
     id: swA
     key: A
   - platform: matrix_keyboard
     keyboard_id: keyboard
-    name: "Switch B"
+    name: "Switch SWB"
     id: swB
     key: B
 
 sensor:
   - <<: !include common/wifi_status.yaml
   - <<: !include common/uptime.yaml
+
   # The rotary encoder rotation
   - platform: rotary_encoder
     name: "Rotary Encoder"
@@ -344,13 +324,20 @@ sensor:
     pin_b: 
       number: GPIO23
       mode: INPUT_PULLUP
-    on_clockwise:
-      then:
-        - lambda: !lambda |-
-            int bright = id(led_bright) < 100 ? id(led_bright) + 1 : 100;
-            id(led_bright) = bright;
-    on_anticlockwise:
-      then:
-        - lambda: !lambda |-
-            int bright = id(led_bright) > 0 ? id(led_bright) - 1 : 0;
-            id(led_bright) = bright;
+    # on_clockwise:
+    #   then:
+    #     - lambda: !lambda |-
+    #         int bright = id(led_bright) < 100 ? id(led_bright) + 5 : 100;
+    #         id(led_bright) = bright;
+    #     - logger.log:
+    #         format: "Set brightness = %d"
+    #         args: [id(led_bright)]
+    # on_anticlockwise:
+    #   then:
+    #     - lambda: !lambda |-
+    #         int bright = id(led_bright) > 0 ? id(led_bright) - 5 : 0;
+    #         id(led_bright) = bright;
+    #     - logger.log:
+    #         format: "Set brightness = %d"
+    #         args: [id(led_bright)]
+
