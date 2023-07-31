@@ -1,0 +1,104 @@
+blueprint:
+  name: Panel Control
+  description: Turn a light on based on a device state
+  domain: automation
+  input:
+    led_color:
+      name: LED On Color
+      description: LED color when device is On
+      selector:
+        color_rgb:
+    sync_color:
+      name: LED Sync Color
+      description: LED color when device is out of sync with switch
+      selector:
+        color_rgb:
+    led_brightness:
+      name: LED Brightness
+      selector:
+        number:
+          max: 0
+          min: 256
+    panel_led:
+      name: Panel LED
+      description: The Light to keep in sync with the device
+      selector:
+        entity:
+          filter:
+            domain: light
+    panel_switch:
+      name: Panel Switch
+      description: The switch to control the device
+      selector:
+        entity:
+          filter:
+            domain: [switch, binary_sensor]
+    target_device:
+      name: Target Device
+      description: The device to be synchronized with
+      selector:
+        entity:
+          filter:
+            domain: light
+
+trigger:
+  - platform: state
+    entity_id:
+      - !input target_device
+      - !input panel_switch
+
+action:
+  - choose:
+      - conditions:
+          - condition: state
+            entity_id: !input panel_switch
+            state: "off"
+          - condition: state
+            entity_id: !input target_device
+            state: "off"
+        sequence:
+          - service: homeassistant.turn_off
+            target:
+              entity_id: !input panel_led
+      - conditions:
+          - condition: state
+            entity_id: !input panel_switch
+            state: "on"
+          - condition: state
+            entity_id: !input target_device
+            state: "on"
+        sequence:
+          - service: homeassistant.turn_on
+            target:
+              entity_id: !input panel_led
+            data:
+              brightness: !input led_brightness
+              rgb_color: !input led_color
+      - conditions:
+          - condition: state
+            entity_id: !input panel_switch
+            state: "on"
+          - condition: state
+            entity_id: !input target_device
+            state: "off"
+        sequence:
+          - service: homeassistant.turn_on
+            target:
+              entity_id: !input panel_led
+            data:
+              brightness: !input led_brightness
+              rgb_color: !input sync_color
+      - conditions:
+          - condition: state
+            entity_id: !input panel_switch
+            state: "off"
+          - condition: state
+            entity_id: !input target_device
+            state: "on"
+        sequence:
+          - service: homeassistant.turn_on
+            target:
+              entity_id: !input panel_led
+            data:
+              brightness: !input led_brightness
+              rgb_color: !input sync_color
