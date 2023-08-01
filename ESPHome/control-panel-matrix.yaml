@@ -37,7 +37,7 @@ wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
   # fast_connect helps with connection to hidden SSID
-  fast_connect: true
+  fast_connect: True
   # force the network name to be on hidden network
   use_address: ${device_name}.playmates
 
@@ -58,8 +58,8 @@ api:
 
 web_server:
   # Web interface enabled and has local resources (no Internet)
-  local: true
-  include_internal: true
+  local: True
+  include_internal: True
 
 external_components:
   # use all components from a local folder
@@ -71,7 +71,7 @@ external_components:
 globals:
   - id: led_bright
     type: int
-    restore_value: yes
+    restore_value: True
     initial_value: '15'
 
 switch:
@@ -98,6 +98,9 @@ light:
     chipset: ws2812
     name: "Panel LEDs"
 
+  # Define light partitions for each panel LED so they are easily referenced
+  # in automations and controls.
+  # Note the mapping is not [0] above SW0 unfortunately
   - platform: partition
     name: "Light SW0"
     id: light_sw0
@@ -138,7 +141,6 @@ light:
       - id: panel_leds
         from: 12
         to: 12
-
   - platform: partition
     name: "Light SW5"
     id: light_sw5
@@ -179,7 +181,6 @@ light:
       - id: panel_leds
         from: 3
         to: 3
-
   - platform: partition
     name: "Light Encoder"
     id: light_encoder
@@ -188,7 +189,6 @@ light:
       - id: panel_leds
         from: 2
         to: 2
-
   - platform: partition
     name: "Light Call"
     id: light_call
@@ -197,7 +197,6 @@ light:
       - id: panel_leds
         from: 1
         to: 1
-
   - platform: partition
     name: "Light SWAB"
     id: light__swab
@@ -209,7 +208,6 @@ light:
 
 matrix_keyboard:
   # The matrix toggle switches on the control panel
-  # name: "Keyboard"
   id: keyboard
   rows:
     - pin: GPIO12
@@ -224,7 +222,7 @@ matrix_keyboard:
   # are not really lined up. This mapping maps the switches to sane "keys"
   keymap: "504A123B6789"
   # There are diodes for n-key rollover
-  has_diodes: true     
+  has_diodes: True     
 
 binary_sensor:
   - <<: !include common/status.yaml
@@ -236,7 +234,7 @@ binary_sensor:
     pin: 
       number: GPIO18
       mode: INPUT_PULLUP
-      inverted: true
+      inverted: True
 
   # The rotary encoder has a push button
   - platform: gpio
@@ -245,8 +243,9 @@ binary_sensor:
     pin: 
       number: GPIO19
       mode: INPUT_PULLUP
-      inverted: true
+      inverted: True
 
+  # The key toggles
   - platform: matrix_keyboard
     keyboard_id: keyboard
     name: "Switch SW0"
@@ -297,7 +296,6 @@ binary_sensor:
     name: "Switch SW9"
     id: sw9
     key: 9
-
   - platform: matrix_keyboard
     keyboard_id: keyboard
     name: "Switch SWA"
