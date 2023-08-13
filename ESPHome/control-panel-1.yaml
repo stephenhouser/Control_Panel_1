@@ -307,9 +307,32 @@ binary_sensor:
     id: swB
     key: B
 
+
+display:
+  - platform: tm1637
+    id: right_display
+    clk_pin: GPIO4
+    dio_pin: GPIO0
+    length: 4
+    lambda: |-
+      it.set_intensity(3);
+      int d_value = id(mains_power).state;
+      if (d_value == INT_MAX) {
+        it.printf(0, "----");
+      } else {
+        it.printf(0, "%4.1d", d_value);
+      }
+
 sensor:
   - <<: !include common/wifi_status.yaml
   - <<: !include common/uptime.yaml
+
+  # Values from HomeAssistant
+  - platform: homeassistant
+    id: mains_power
+    name: "Mains Energy Use"
+    entity_id: sensor.mains
+
 
   # The rotary encoder rotation
   - platform: rotary_encoder
