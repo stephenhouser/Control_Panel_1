@@ -5,6 +5,8 @@ substitutions:
   device_name: "dev-control-panel"
   friendly_name: "Dev Control Panel"
   friendly_short: "dev_control_panel"
+  display_a_sensor: "sensor.dev_control_panel_display_a"
+  display_b_sensor: "sensor.dev_control_panel_display_b"
 
 esphome:
   name: ${device_name}
@@ -14,14 +16,13 @@ esphome:
       condition:
         api.connected:
       then:
-        - logger.log: API is connected! Now we can trigger what we want!
+        - logger.log: API connected.
         - light.turn_on: 
             id: panel_leds
             red: 0
             green: 1
             blue: 0
         - delay: 1s
-        - logger.log: Time for deep sleep! zzZ
         - light.turn_off: panel_leds
 
 esp32:
@@ -74,6 +75,15 @@ globals:
     restore_value: True
     initial_value: '15'
 
+  - id: display_bright
+    type: int
+    restore_value: True
+    initial_value: '3'
+
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+
 switch:
   # Allow remote restart (from web interface also)
   - platform: restart
@@ -93,7 +103,7 @@ light:
     pin: GPIO5
     id: panel_leds
     # 13 LEDs in control panel; 6 in display panel
-    num_leds: 13
+    num_leds: 17
     rmt_channel: 0
     chipset: ws2812
     name: "Panel LEDs"
@@ -102,109 +112,141 @@ light:
   # in automations and controls.
   # Note the mapping is not [0] above SW0 unfortunately
   - platform: partition
-    name: "Light SW0"
-    id: light_sw0
+    name: "LED SW0"
+    id: led_sw0
     default_transition_length: 0s
     segments:
       - id: panel_leds
         from: 8
         to: 8
   - platform: partition
-    name: "Light SW1"
-    id: light_sw1
+    name: "LED SW1"
+    id: led_sw1
     default_transition_length: 0s
     segments:
       - id: panel_leds
         from: 9
         to: 9
   - platform: partition
-    name: "Light SW2"
-    id: light_sw2
+    name: "LED SW2"
+    id: led_sw2
     default_transition_length: 0s
     segments:
       - id: panel_leds
         from: 10
         to: 10
   - platform: partition
-    name: "Light SW3"
-    id: light_sw3
+    name: "LED SW3"
+    id: led_sw3
     default_transition_length: 0s
     segments:
       - id: panel_leds
         from: 11
         to: 11
   - platform: partition
-    name: "Light SW4"
-    id: light_sw4
+    name: "LED SW4"
+    id: led_sw4
     default_transition_length: 0s
     segments:
       - id: panel_leds
         from: 12
         to: 12
   - platform: partition
-    name: "Light SW5"
-    id: light_sw5
+    name: "LED SW5"
+    id: led_sw5
     default_transition_length: 0s
     segments:
       - id: panel_leds
         from: 7
         to: 7
   - platform: partition
-    name: "Light SW6"
-    id: light_sw6
+    name: "LED SW6"
+    id: led_sw6
     default_transition_length: 0s
     segments:
       - id: panel_leds
         from: 6
         to: 6
   - platform: partition
-    name: "Light SW7"
-    id: light_sw7
+    name: "LED SW7"
+    id: led_sw7
     default_transition_length: 0s
     segments:
       - id: panel_leds
         from: 5
         to: 5
   - platform: partition
-    name: "Light SW8"
-    id: light_sw8
+    name: "LED SW8"
+    id: led_sw8
     default_transition_length: 0s
     segments:
       - id: panel_leds
         from: 4
         to: 4
   - platform: partition
-    name: "Light SW9"
-    id: light_sw9
+    name: "LED SW9"
+    id: led_sw9
     default_transition_length: 0s
     segments:
       - id: panel_leds
         from: 3
         to: 3
   - platform: partition
-    name: "Light Encoder"
-    id: light_encoder
+    name: "LED Encoder"
+    id: led_encoder
     default_transition_length: 0s
     segments:
       - id: panel_leds
         from: 2
         to: 2
   - platform: partition
-    name: "Light Call"
-    id: light_call
+    name: "LED Call"
+    id: led_call
     default_transition_length: 0s
     segments:
       - id: panel_leds
         from: 1
         to: 1
   - platform: partition
-    name: "Light SWAB"
-    id: light__swab
+    name: "LED SWAB"
+    id: led_swab
     default_transition_length: 0s
     segments:
       - id: panel_leds
         from: 0
         to: 0
+  - platform: partition
+    name: "LED D1"
+    id: led_d1
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 13
+        to: 13
+  - platform: partition
+    name: "LED D2"
+    id: led_d2
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 14
+        to: 14
+  - platform: partition
+    name: "LED D3"
+    id: led_d3
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 15
+        to: 15
+  - platform: partition
+    name: "LED Top"
+    id: led_top
+    default_transition_length: 0s
+    segments:
+      - id: panel_leds
+        from: 16
+        to: 16
 
 matrix_keyboard:
   # The matrix toggle switches on the control panel
@@ -307,37 +349,67 @@ binary_sensor:
     id: swB
     key: B
 
-
 display:
   - platform: tm1637
-    id: right_display
+    id: display_a
     clk_pin: GPIO4
     dio_pin: GPIO0
     length: 4
     lambda: |-
-      it.set_intensity(3);
-      int d_value = id(mains_power).state;
+      it.set_intensity(id(display_bright));
+      const char *val = id(display_a_value).state.c_str();
+      if (!val || !strcmp("unavailable", val)) {
+        it.printf(0, "----");
+      } else if (!strcmp("time", val)) {
+        static int time_colon = 0;
+        if ((time_colon++ % 2) == 0) {
+          it.strftime("%l.%M", id(homeassistant_time).now());
+        } else {
+          it.strftime("%l%M", id(homeassistant_time).now());
+        }
+      } else {        
+        it.printf(0, "%4s", val);
+      }
+
+  - platform: tm1637
+    id: display_b
+    clk_pin: GPIO4
+    dio_pin: GPIO2
+    length: 4
+    lambda: |-
+      it.set_intensity(id(display_bright));
+      int d_value = id(display_b_value).state;
       if (d_value == INT_MAX) {
         it.printf(0, "----");
       } else {
         it.printf(0, "%4.1d", d_value);
       }
 
+text_sensor:
+  - platform: homeassistant
+    id: display_a_value
+    name: "Display A Value"
+    entity_id: ${display_a_sensor}
+  
 sensor:
   - <<: !include common/wifi_status.yaml
   - <<: !include common/uptime.yaml
 
   # Values from HomeAssistant
-  - platform: homeassistant
-    id: mains_power
-    name: "Mains Energy Use"
-    entity_id: sensor.mains
+  #- platform: homeassistant
+  #  id: display_a_value
+  #  name: "Display A Value"
+  #  entity_id: ${display_a_sensor}
 
+  - platform: homeassistant
+    id: display_b_value
+    name: "Display B Value"
+    entity_id: ${display_b_sensor}
 
   # The rotary encoder rotation
   - platform: rotary_encoder
     name: "Rotary Encoder"
-    id: panel_encoder
+    id: panel_rotary_encoder
     publish_initial_value: True
     pin_a: 
       number: GPIO21
@@ -345,20 +417,15 @@ sensor:
     pin_b: 
       number: GPIO23
       mode: INPUT_PULLUP
-    # on_clockwise:
-    #   then:
-    #     - lambda: !lambda |-
-    #         int bright = id(led_bright) < 100 ? id(led_bright) + 5 : 100;
-    #         id(led_bright) = bright;
-    #     - logger.log:
-    #         format: "Set brightness = %d"
-    #         args: [id(led_bright)]
-    # on_anticlockwise:
-    #   then:
-    #     - lambda: !lambda |-
-    #         int bright = id(led_bright) > 0 ? id(led_bright) - 5 : 0;
-    #         id(led_bright) = bright;
-    #     - logger.log:
-    #         format: "Set brightness = %d"
-    #         args: [id(led_bright)]
 
+
+# i2s_audio:
+#   i2s_lrclk_pin: GPIO17
+#   i2s_bclk_pin: GPIO16
+
+# media_player:
+#   - platform: i2s_audio
+#     name: media player
+#     dac_type: external
+#     i2s_dout_pin: GPIO15
+#     mode: mono

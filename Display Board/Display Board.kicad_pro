@@ -474,10 +474,10 @@
   "pcbnew": {
     "last_paths": {
       "gencad": "",
-      "idf": "",
+      "idf": "Display Board.emn",
       "netlist": "",
       "specctra_dsn": "",
-      "step": "",
+      "step": "Display Board.step",
       "vrml": ""
     },
     "page_layout_descr_file": ""
