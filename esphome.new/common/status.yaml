@@ -1,5 +1,0 @@
-# A "connected?" status sensor that - as long as sensor + mqtt + HA are working -
-#   will always display "true". Allows for easy detection of sensor failure from HA
-# See: https://esphome.io/components/binary_sensor/status.html
-platform: status
-name: "${friendly_name} Status"

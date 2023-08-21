@@ -1,3 +1,0 @@
-platform: uptime
-name: ${friendly_name} Uptime
-update_interval: 60s
