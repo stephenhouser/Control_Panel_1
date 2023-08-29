@@ -426,7 +426,7 @@ display:
   - platform: tm1637
     id: display_a
     clk_pin: GPIO4
-    dio_pin: GPIO2
+    dio_pin: GPIO0
     length: 4
     lambda: |-
       it.set_intensity(id(display_bright));
@@ -447,7 +447,7 @@ display:
   - platform: tm1637
     id: display_b
     clk_pin: GPIO4
-    dio_pin: GPIO0
+    dio_pin: GPIO2
     length: 4
     lambda: |-
       it.set_intensity(id(display_bright));
