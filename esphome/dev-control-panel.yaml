@@ -78,7 +78,7 @@ globals:
   - id: display_bright
     type: int
     restore_value: True
-    initial_value: '3'
+    initial_value: '1'
 
 time:
   - platform: homeassistant
@@ -247,6 +247,32 @@ light:
       - id: panel_leds
         from: 16
         to: 16
+    effects:
+      - pulse:
+          name: "Pulse Red"
+          min_brightness: 12%
+          update_interval: 1s
+      - strobe:
+          name: "Color Cycle"
+          colors:
+            - state: true
+              brightness: 75%
+              red: 100%
+              green: 50%
+              blue: 50%
+              duration: 500ms
+            - state: true
+              brightness: 75%
+              red: 50%
+              green: 100%
+              blue: 50%
+              duration: 500ms
+            - state: true
+              brightness: 75%
+              red: 50%
+              green: 50%
+              blue: 100%
+              duration: 500ms
 
 matrix_keyboard:
   # The matrix toggle switches on the control panel
@@ -277,6 +303,16 @@ binary_sensor:
       number: GPIO18
       mode: INPUT_PULLUP
       inverted: True
+    on_press:
+      - light.turn_on:
+          id: led_top
+          effect: "Pulse Red"
+          red: 1
+          green: 0
+          blue: 0
+    on_release:
+      - light.turn_off:
+          id: led_top
 
   # The rotary encoder has a push button
   - platform: gpio
@@ -343,17 +379,54 @@ binary_sensor:
     name: "Switch SWA"
     id: swA
     key: A
+    on_press:
+      - light.turn_on:
+          id: led_d3
+          brightness: !lambda return id(led_bright) / 100.0;
+          red: 1
+          green: 0
+          blue: 0
+      - light.turn_off:
+          id: led_d2
+    on_release:
+      - light.turn_off:
+          id: led_d3
+      - light.turn_on:
+          id: led_d2
+          brightness: !lambda return id(led_bright) / 100.0;
+          red: 1
+          green: 0
+          blue: 0
+
   - platform: matrix_keyboard
     keyboard_id: keyboard
     name: "Switch SWB"
     id: swB
     key: B
+    on_press:
+      - light.turn_on:
+          id: led_d1
+          brightness: !lambda return id(led_bright) / 100.0;
+          red: 1
+          green: 0
+          blue: 0
+      - light.turn_off:
+          id: led_d2
+    on_release:
+      - light.turn_off:
+          id: led_d1
+      - light.turn_on:
+          id: led_d2
+          brightness: !lambda return id(led_bright) / 100.0;
+          red: 1
+          green: 0
+          blue: 0
 
 display:
   - platform: tm1637
     id: display_a
     clk_pin: GPIO4
-    dio_pin: GPIO0
+    dio_pin: GPIO2
     length: 4
     lambda: |-
       it.set_intensity(id(display_bright));
@@ -374,7 +447,7 @@ display:
   - platform: tm1637
     id: display_b
     clk_pin: GPIO4
-    dio_pin: GPIO2
+    dio_pin: GPIO0
     length: 4
     lambda: |-
       it.set_intensity(id(display_bright));
