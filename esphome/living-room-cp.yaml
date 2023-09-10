@@ -5,8 +5,8 @@ substitutions:
   device_name: "living-room-cp"
   friendly_name: "Living Room Control Panel"
   friendly_short: "living_room_cp"
-  display_a_sensor: "sensor.living_room_cp_display_a"
-  display_b_sensor: "sensor.living_room_cp_display_b"
+  display_a_sensor: "sensor.living_room_control_panel_display_a"
+  display_b_sensor: "sensor.living_room_control_panel_display_b"
 
 esphome:
   name: ${device_name}
@@ -78,7 +78,7 @@ globals:
   - id: display_bright
     type: int
     restore_value: True
-    initial_value: '1'
+    initial_value: '2'
 
 time:
   - platform: homeassistant
@@ -383,9 +383,9 @@ binary_sensor:
       - light.turn_on:
           id: led_d3
           brightness: !lambda return id(led_bright) / 100.0;
-          red: 1
+          red: 0
           green: 0
-          blue: 0
+          blue: 1
       - light.turn_off:
           id: led_d2
     on_release:
@@ -394,9 +394,9 @@ binary_sensor:
       - light.turn_on:
           id: led_d2
           brightness: !lambda return id(led_bright) / 100.0;
-          red: 1
+          red: 0
           green: 0
-          blue: 0
+          blue: 1
 
   - platform: matrix_keyboard
     keyboard_id: keyboard
@@ -407,9 +407,9 @@ binary_sensor:
       - light.turn_on:
           id: led_d1
           brightness: !lambda return id(led_bright) / 100.0;
-          red: 1
+          red: 0
           green: 0
-          blue: 0
+          blue: 1
       - light.turn_off:
           id: led_d2
     on_release:
@@ -418,9 +418,9 @@ binary_sensor:
       - light.turn_on:
           id: led_d2
           brightness: !lambda return id(led_bright) / 100.0;
-          red: 1
+          red: 0
           green: 0
-          blue: 0
+          blue: 1
 
 display:
   - platform: tm1637
@@ -490,15 +490,3 @@ sensor:
     pin_b: 
       number: GPIO23
       mode: INPUT_PULLUP
-
-
-# i2s_audio:
-#   i2s_lrclk_pin: GPIO17
-#   i2s_bclk_pin: GPIO16
-
-# media_player:
-#   - platform: i2s_audio
-#     name: media player
-#     dac_type: external
-#     i2s_dout_pin: GPIO15
-#     mode: mono
