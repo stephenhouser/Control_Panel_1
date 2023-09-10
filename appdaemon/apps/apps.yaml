@@ -1,0 +1,54 @@
+---
+dev_control_panel:
+  module: control_panel
+  class: ControlPanel
+  panel: dev_control_panel
+  defaults:
+    color_on:
+      brightness: 55
+      color_name: red
+    color_sync:
+      brightness: 55
+      color_name: green
+  switches:
+    - sw0: light.garage_side_switch
+    - sw1: light.back_door_light
+    - sw2: light.backyard_light
+    - sw3: light.kitchen_led_master
+    - sw4: switch.tv_power_strip
+    - sw5: light.bookcase_lights_2
+    - sw6: light.reading_lamps
+    - sw7: light.mudroom_deck_light
+    - sw8: light.garage_front_switch
+    - sw9: light.front_porch_light
+    - swa:
+        light: light.dev_control_panel_led_swab
+        color_on:
+          color_name: blue
+    - swb:
+        light: light.dev_control_panel_led_swab
+        color_on:
+          color_name: green
+
+driveway_motion:
+  module: trigger_timeout
+  class: TriggerTimeout
+  sensor:
+    - binary_sensor.g3_instant_motion
+    - binary_sensor.rear_driveway_motion
+  target:
+    - light.living_room_cp_led_top
+    - light.dev_control_panel_led_top
+  timeout: 60
+  color: "blue"
+
+doorbell_motion:
+  module: trigger_timeout
+  class: TriggerTimeout
+  sensor:
+    - binary_sensor.g4_doorbell_motion
+  target:
+    - light.living_room_cp_led_top
+    - light.dev_control_panel_led_top
+  timeout: 60
+  color: "red"
